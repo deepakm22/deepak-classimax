@@ -14,7 +14,6 @@ exports.registerUser = async (email, password, confirmPassword) => {
                 responseCode: 400
             };
         }
-
         const existingUser = await userSchema.findOne({ email });
         if (existingUser) {
             return {
@@ -141,4 +140,36 @@ exports.deleteUser = async (userId, email) => {
     }
 };
 
+exports.updatePassword = async (userId, updateData, email) => {
+    try {
+console.log(updateData);
 
+        updateData.updated_at = Date.now();
+        const _id = userId
+console.log(_id);
+
+        const updatedPassword = await userSchema.findByIdAndUpdate(_id, updateData, { new: true });
+
+        if (!updatedPassword) {
+            return {
+                result: {},
+                message: 'User not found',
+                status: 'error',
+                responseCode: 404
+            };
+        }
+
+        sendMail(email, 'user password updated Successful', `${email}!`);
+
+
+        return {
+            result: updatedPassword,
+            message: 'Password updated successfully',
+            status: 'success',
+            responseCode: 200
+        };
+    } catch (error) {
+        console.error('Update password error:', error);
+        throw error;
+    }
+};

@@ -1,10 +1,13 @@
-const  { registerUser, loginUser, updateUserProfileService , deleteUser } = require('../services/userServices')
+const  { registerUser, loginUser, updateUserProfileService , deleteUser, updatePassword } = require('../services/userServices')
 require('dotenv').config();
 
 exports.register = async (req, res) => {
     try {
+
         const { email, password, confirmPassword } = req.body;
+
         const result = await registerUser(email, password, confirmPassword);
+
         return res.status(result.responseCode).json(result);
     } catch (error) {
         console.error('Registration error:', error);
@@ -87,6 +90,27 @@ exports.deleteUser = async (req, res) => {
             status: 'error',
             responseCode: 500,
             reason: error.message,
+        });
+    }
+};
+
+exports.updateUserPassword = async (req, res) => {
+    try {
+        const   userId  = req.user;
+        const email = req.email
+        const { oldPassword, newPassword } = req.body;
+
+        const result = await updatePassword(userId, { oldPassword, newPassword }, email);
+
+        return res.status(result.responseCode).json(result);
+    } catch (error) {
+        console.error('Update password error:', error);
+        return res.status(500).json({
+            result: {},
+            message: 'An unexpected error occurred. Please try again later.',
+            status: 'error',
+            responseCode: 500,
+            reason: error.message
         });
     }
 };

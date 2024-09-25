@@ -13,6 +13,7 @@ const registerValidationSchema = Joi.object({
         'string.min': 'Password must be at least 6 characters long',
         'any.required': 'Confirm password is required'
     })
+    
 });
 
 const loginValidationSchema = Joi.object({
