@@ -1,12 +1,16 @@
 const express = require('express');
-const { validateRegister, validateLogin } = require('../middlewares/loginValidation');
-const { register, login } = require('../controllers/userController');
+const validationMiddleware = require('../middlewares/validateMiddleware')
+const authenticateToken = require('../middlewares/authMiddleware')
+const { register, login, updateUserProfile, deleteUser} = require('../controllers/userController');
+
 
 
 const router = express.Router();
 
-router.post('/register', validateRegister, register)
-router.post('/login', validateLogin, login)
+router.post('/register', validationMiddleware, register)
+router.post('/login', validationMiddleware, login)
+router.patch('/updateUserProfile', validationMiddleware, authenticateToken, updateUserProfile)
+router.delete('/deleteUser',  authenticateToken, deleteUser)
 
 
 module.exports = router;
