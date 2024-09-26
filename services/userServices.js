@@ -2,7 +2,9 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const userSchema = require('../models/userModel');
 const { sendMail } = require('../services/mailServices');
+const crypto = require('crypto')
 require('dotenv').config();
+
 
 exports.registerUser = async (email, password, confirmPassword) => {
     try {
@@ -140,36 +142,180 @@ exports.deleteUser = async (userId, email) => {
     }
 };
 
-exports.updatePassword = async (userId, updateData, email) => {
+exports.updatePassword = async (userId, oldPassword, newPassword,email) => {
+    const user = await userSchema.findById(userId);
+    if (!user) {
+    return {
+        result: {},
+        message: 'User not found',
+        status: 'error',
+        responseCode: 404,
+    };
+    }
+
+    const validPassword = await bcrypt.compare(oldPassword, user.password);
+    if (!validPassword) {
+    return {
+        result: {},
+        message: 'Old password is incorrect',
+        status: 'error',
+        responseCode: 400,
+    };
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    user.password = hashedPassword;
+    await user.save();
+
+    sendMail(email, 'user password updated Successful', ` ${email}!`);
+
+
+    return {
+    result: {},
+    message: 'Password changed successfully',
+    status: 'success',
+    responseCode: 200,
+    };
+};
+
+exports.updateEmail = async (userId, currentEmail, newEmail) => {
+    const user = await userSchema.findById(userId);
+    console.log(user.email);
+    
+    if (!user) {
+        return {
+            message: 'User not found',
+            status: 'error',
+            responseCode: 404,
+        };
+    }
+
+    if (user.email !== currentEmail) {
+        return {
+            message: 'Current email does not match our records',
+            status: 'error',
+            responseCode: 400,
+        };
+    }
+
+    const existingEmail = await userSchema.findOne({ email: newEmail });
+    if (existingEmail) {
+        return {
+            message: 'Email already in use',
+            status: 'error',
+            responseCode: 400,
+        };
+    }
+
+    user.email = newEmail;
+    await user.save();
+
+    sendMail(newEmail, 'User Email Updated Successfully', `Hello, ${newEmail}. Your email has been updated successfully.`);
+
+    return {
+        message: 'Email updated successfully',
+        status: 'success',
+        responseCode: 200,
+    };
+};
+
+exports.getProfile = async (userId) => {
+    const user = await userSchema.findById(userId).select('-password');
+
+    if (!user) {
+    return {
+        result: {},
+        message: 'User not found',
+        status: 'error',
+        responseCode: 404,
+    };
+    }
+
+    const userProfileWithBase64Image = {
+    ...user.toObject(),
+    image: user.image ? user.image.toString('base64') : null, 
+    };
+
+    return {
+    result: userProfileWithBase64Image,
+    message: 'User profile fetched successfully',
+    status: 'success',
+    responseCode: 200,
+    }
+}
+
+exports.forgotUserPassword = async (email) => {
     try {
-console.log(updateData);
-
-        updateData.updated_at = Date.now();
-        const _id = userId
-console.log(_id);
-
-        const updatedPassword = await userSchema.findByIdAndUpdate(_id, updateData, { new: true });
-
-        if (!updatedPassword) {
+        const user = await userSchema.findOne({ email });
+        if (!user) {
             return {
                 result: {},
                 message: 'User not found',
                 status: 'error',
-                responseCode: 404
+                responseCode: 404,
             };
         }
 
-        sendMail(email, 'user password updated Successful', `${email}!`);
+        const otp = crypto.randomInt(100000, 999999).toString();
+        const expires = Date.now() + 3600000; 
 
+        user.otp = otp;
+        user.expires = expires;
+        await user.save();
+
+        sendMail(email, `Your OTP ${otp}`, `Your OTP for password reset is . It is valid for 1 hour.`);
 
         return {
-            result: updatedPassword,
-            message: 'Password updated successfully',
+            result: {},
+            message: 'OTP sent to your email',
             status: 'success',
-            responseCode: 200
+            responseCode: 200,
         };
     } catch (error) {
-        console.error('Update password error:', error);
-        throw error;
+        console.error('Forgot password error:', error);
+        return {
+            result: {},
+            message: 'An unexpected error occurred. Please try again later.',
+            status: 'error',
+            responseCode: 500,
+            reason: error.message,
+        };
+    }
+};
+
+exports.resetUserPassword = async (email, otp, newPassword) => {
+    try {
+        const user = await userSchema.findOne({ email, otp });
+        if (!user || user.expires < Date.now()) {
+            return {
+                result: {},
+                message: 'OTP is invalid or has expired',
+                status: 'error',
+                responseCode: 400,
+            };
+        }
+
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+        user.password = hashedPassword;
+
+        user.otp = undefined;
+        user.expires = undefined;
+
+        await user.save();
+
+        return {
+            result: {},
+            message: 'Password reset successful',
+            status: 'success',
+            responseCode: 200,
+        };
+    } catch (error) {
+        return {
+            result: {},
+            message: 'An unexpected error occurred. Please try again later.',
+            status: 'error',
+            responseCode: 500,
+            reason: error.message,
+        };
     }
 };

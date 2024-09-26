@@ -1,4 +1,4 @@
-const { registerValidationSchema, loginValidationSchema, profileUpdateSchema} = require('../validation/loginValidation')
+const { registerValidationSchema, loginValidationSchema, profileUpdateSchema, deleteUserSchema, updateUserPasswordSchema, updateUserEmailSchema, resetPasswordSchema} = require('../validation/loginValidation')
 
 const validationMiddleware = (req, res, next) => {
     let schema;
@@ -13,9 +13,20 @@ const validationMiddleware = (req, res, next) => {
     case '/updateProfile':
         schema = profileUpdateSchema;
         break;
-
+    case '/deleteUser':
+        schema = deleteUserSchema;
+        break;
+    case '/updatePassword':
+        schema = updateUserPasswordSchema;
+        break;
+    case '/updateEmail':
+        schema = updateUserEmailSchema;
+        break;
+    case '/reset':
+        schema = resetPasswordSchema;
+        break;
     default:
-        schema = null;
+        schema = null;   
     }
 
     if (schema) {

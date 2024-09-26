@@ -1,4 +1,4 @@
-const  { registerUser, loginUser, updateUserProfileService , deleteUser, updatePassword } = require('../services/userServices')
+const  { registerUser, loginUser, updateUserProfileService , deleteUser, updatePassword, updateEmail, getProfile, forgotUserPassword, resetUserPassword} = require('../services/userServices')
 require('dotenv').config();
 
 exports.register = async (req, res) => {
@@ -95,22 +95,91 @@ exports.deleteUser = async (req, res) => {
 };
 
 exports.updateUserPassword = async (req, res) => {
+    const { oldPassword, newPassword } = req.body;
+    const userId = req.user;
+    const email = req.email
+
     try {
-        const   userId  = req.user;
-        const email = req.email
-        const { oldPassword, newPassword } = req.body;
+    const result = await updatePassword(userId, oldPassword, newPassword, email);
+    return res.status(result.responseCode).json(result);
+    } catch (err) {
+    return res.status(500).json({
+        result: {},
+        message: 'Server error',
+        status: 'error',
+        responseCode: 500,
+        error: err.message,
+    });
+    }
+};
 
-        const result = await updatePassword(userId, { oldPassword, newPassword }, email);
+exports.updateUserEmail = async (req, res) => {
+    const { currentEmail, newEmail } = req.body;
+    const userId = req.user;
+    const email = req.email;
 
+    try {
+        const result = await updateEmail(userId, currentEmail, newEmail, email);
+        return res.status(result.responseCode).json(result);
+    } catch (err) {
+        return res.status(500).json({
+            message: 'Server error',
+            status: 'error',
+            responseCode: 500,
+            error: err.message,
+        });
+    }
+};
+
+
+exports.getUserProfile = async (req, res) => {
+    try {
+    const userId = req.user;
+
+    const result = await getProfile(userId);
+
+    return res.status(result.responseCode).json(result);
+    } catch (err) {
+    return res.status(500).json({
+        result: {},
+        message: 'Server error',
+        status: 'error',
+        responseCode: 500,
+        error: err.message,
+    });
+    }
+};
+
+exports.forgotPassword = async (req, res) => {
+    try {
+        const { email } = req.body;
+        const result = await forgotUserPassword(email);
         return res.status(result.responseCode).json(result);
     } catch (error) {
-        console.error('Update password error:', error);
+        console.error('Forgot password error:', error);
         return res.status(500).json({
             result: {},
             message: 'An unexpected error occurred. Please try again later.',
             status: 'error',
             responseCode: 500,
-            reason: error.message
+            reason: error.message,
+        });
+    }
+};
+
+exports.resetPassword = async (req, res) => {
+    try {
+        const { email, otp, newPassword } = req.body;
+        const result = await resetUserPassword(email, otp, newPassword);
+        return res.status(result.responseCode).json(result);
+    } catch (error) {
+        console.error('Reset password error:', error);
+        return res.status(500).json({
+            result: {},
+            message: 'An unexpected error occurred. Please try again later.',
+            status: 'error',
+            responseCode: 500,
+            reason: error.message,
         });
     }
 };

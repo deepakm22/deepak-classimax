@@ -48,6 +48,38 @@ const profileUpdateSchema = Joi.object({
     image: Joi.any().optional()
 });
 
+const deleteUserSchema = Joi.object({
+    userId: Joi.string().required(),
+    email: Joi.string().email().required()
+});
+
+const updateUserPasswordSchema = Joi.object({
+    oldPassword: Joi.string().min(6).required(),
+    newPassword: Joi.string().min(6).required()
+});
+
+const updateUserEmailSchema = Joi.object({
+    currentEmail: Joi.string().email().required(),
+    newEmail: Joi.string().email().required(),
+});
+
+const resetPasswordSchema = Joi.object({
+    email: Joi.string().email().required().messages({
+        'string.email': 'A valid email address is required',
+        'string.empty': 'Email cannot be empty',
+        'any.required': 'Email is required',
+    }),
+    otp: Joi.string().length(6).required().messages({
+        'string.length': 'OTP must be exactly 6 digits',
+        'string.empty': 'OTP cannot be empty',
+        'any.required': 'OTP is required',
+    }),
+    newPassword: Joi.string().min(6).required().messages({
+        'string.min': 'Password must be at least 6 characters long',
+        'string.empty': 'Password cannot be empty',
+        'any.required': 'Password is required',
+    }),
+});
 
 
-module.exports = { registerValidationSchema, loginValidationSchema, profileUpdateSchema  };
+module.exports = { registerValidationSchema, loginValidationSchema, profileUpdateSchema, deleteUserSchema, updateUserPasswordSchema, updateUserEmailSchema, resetPasswordSchema };
