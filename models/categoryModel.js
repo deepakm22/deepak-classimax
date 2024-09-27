@@ -16,12 +16,14 @@ updated_at: {
 },
 created_by: {
     type: Schema.Types.ObjectId,
-    required: false
+    required: true
 },
 updated_by: {
     type: Schema.Types.ObjectId,
-    required: false
+    required: true
 }
 });
+
+
 
 module.exports = mongoose.model('Category', categorySchema);

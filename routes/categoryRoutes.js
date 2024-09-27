@@ -10,7 +10,7 @@ router.post('/createCategory', authenticateToken,validationMiddleware, addCatego
 router.get('/getAll', authenticateToken, validationMiddleware, getAllCategories)
 router.get('/getSingleCategory/:id', authenticateToken, getSingleCategory)
 router.put('/updateCategory/:id', authenticateToken,  validationMiddleware, updateCategory)
-router.delete('/deleteCategory/:id', authenticateToken, validationMiddleware, deleteCategory)
+router.delete('/deleteCategory/:id', authenticateToken, deleteCategory)
 
 
 

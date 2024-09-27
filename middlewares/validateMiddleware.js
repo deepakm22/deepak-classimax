@@ -1,6 +1,6 @@
-const { addCategorySchema, updateCategorySchema, deleteCategorySchema} = require('../validation/categoryValidation');
+const { addCategorySchema, updateCategorySchema} = require('../validation/categoryValidation');
 const { registerValidationSchema, loginValidationSchema, profileUpdateSchema, deleteUserSchema, updateUserPasswordSchema, updateUserEmailSchema, resetPasswordSchema} = require('../validation/loginValidation')
-
+const {addSubCategorySchema} = require('../validation/subCategoryValidation')
 
 const validationMiddleware = (req, res, next) => {
     let schema;
@@ -33,8 +33,12 @@ const validationMiddleware = (req, res, next) => {
     case '/updateCategory/:id':
         schema = updateCategorySchema;
         break;
-    case '/deleteCategory/:id':
-        schema = deleteCategorySchema;
+  
+    case '/createSubCategory':
+        schema = addSubCategorySchema;
+        break;
+    case '/updateSubCategory':
+        schema = updateSubCategorySchema;
         break;    
     default:
         schema = null;   
