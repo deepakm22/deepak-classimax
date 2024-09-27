@@ -55,6 +55,12 @@ updated_By: {
     ref: 'User', 
     required: false,
 },
+otp: { type: String, 
+    required: false 
+},
+expires: { type: Date, 
+    required: false 
+},
 });
 
 

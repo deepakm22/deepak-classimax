@@ -15,6 +15,8 @@ try {
     console.log(decoded);
     
     req.user = decoded.id;
+    req.email = decoded.email;
+    console.log(req.user)
     next();
     } catch (error) {
     return res.status(403).json({ error: 'Invalid or expired token' });

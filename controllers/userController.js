@@ -1,81 +1,14 @@
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const User = require('../models/userModel')
-const {sendMail} = require('../services/mailService')
+const  { registerUser, loginUser, updateUserProfileService , deleteUser, updatePassword, updateEmail, getProfile, forgotUserPassword, resetUserPassword} = require('../services/userServices')
 require('dotenv').config();
 
-
 exports.register = async (req, res) => {
-    console.log('Register endpoint hit');
-
     try {
-        const { email, password } = req.body;
 
-        const existingUser = await User.findOne({ where: { email } });
-        if (existingUser) {
-            return res.status(400).json({
-                result: {},
-                message: 'Email already exists. Please use a different email',
-                status: 'error',
-                responseCode: 400
-            });
-        }
+        const { email, password, confirmPassword } = req.body;
 
-        const existingEmail = await User.findOne({ where: { email } });
-        if (existingEmail) {
-            return res.status(400).json({
-                result: {},
-                message: 'email already exists. Please use a different name',
-                status: 'error',
-                responseCode: 400
-            });
-        }
+        const result = await registerUser(email, password, confirmPassword);
 
-        const hashedPassword = await bcrypt.hash(password, 10);
-        console.log(`Creating user with  email: ${email}`);
-
-        await User.create({ email, password: hashedPassword });
-
-        console.log('User created successfully:', { email });
-
-        sendMail(email, 'Register Successful', `Welcome back, ${email}!`, `
-            <div style="font-family: 'Helvetica', 'Arial', sans-serif; color: #4a4a4a; padding: 20px; background-color: #f9f9f9; border-radius: 10px;">
-                <h2 style="color: #2c3e50;">👋 Hey ${name},</h2>
-                <p style="font-size: 16px; line-height: 1.6;">
-                    We're thrilled to have you back! You've successfully register into your account. If you didn't log in or noticed any unusual activity, please <a href="mailto:deepaklogo222@gmail.com" style="color: #3498db; text-decoration: none;">let us know</a> right away.
-                </p>
-                <div style="background-color: #ecf0f1; padding: 15px; border-radius: 8px; margin: 20px 0;">
-                    <h3 style="color: #e74c3c;">🎯 Next Steps for You:</h3>
-                    <ul style="list-style-type: none; padding-left: 0; font-size: 15px;">
-                        <li style="padding: 8px 0;"><strong>🔄 Update your profile:</strong> Keep your information up to date for a personalized experience.</li>
-                        <li style="padding: 8px 0;"><strong>✨ Explore new features:</strong> We've introduced some amazing updates since your last visit. Check them out!</li>
-                        <li style="padding: 8px 0;"><strong>🔒 Secure your account:</strong> Ensure your password is strong and set up two-factor authentication.</li>
-                    </ul>
-                </div>
-                <p style="font-size: 16px; line-height: 1.6;">
-                    Thanks for being a valued member of our community. We can't wait for you to explore all the great things we've been working on!
-                </p>
-                <div style="text-align: center; margin-top: 20px;">
-                    <a href="https://yourapp.com/login" style="background-color: #2ecc71; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold;">
-                        Explore Now 🚀
-                    </a>
-                </div>
-                <p style="font-size: 14px; color: #95a5a6; margin-top: 30px;">
-                    If you need any help, feel free to <a href="mailto:deepaklogo222@gmail.com" style="color: #3498db; text-decoration: none;">reach out to our support team</a>.
-                </p>
-                <p style="font-size: 14px; color: #95a5a6;">
-                    Best regards,<br>Your Company Team
-                </p>
-
-            </div>
-        `);
-
-        return res.status(201).json({
-            result: { email },
-            message: 'User created successfully',
-            status: 'success',
-            responseCode: 201
-        });
+        return res.status(result.responseCode).json(result);
     } catch (error) {
         console.error('Registration error:', error);
         return res.status(500).json({
@@ -91,71 +24,8 @@ exports.register = async (req, res) => {
 exports.login = async (req, res) => {
     try {
         const { email, password } = req.body;
-
-        const user = await User.findOne({ where: { email } });
-        if (!user) {
-            return res.status(400).json({
-                result: {},
-                message: 'User not found',
-                status: 'error',
-                responseCode: 400
-            });
-        }
-
-        const validPassword = await bcrypt.compare(password, user.password);
-        if (!validPassword) {
-            return res.status(400).json({
-                result: {},
-                message: 'Invalid credentials',
-                status: 'error',
-                responseCode: 400
-            });
-        }
-
-        console.log('Login successful for user:', user.email);
-
-        const token = jwt.sign({ id: user.id, email: user.email }, process.env.SECRET_KEY);
-
-        sendMail(email, 'Login Successful', `Welcome back, ${user.email}!`, `
-            <div style="font-family: 'Helvetica', 'Arial', sans-serif; color: #4a4a4a; padding: 20px; background-color: #f9f9f9; border-radius: 10px;">
-                <h2 style="color: #2c3e50;">👋 Hey ${user.email},</h2>
-                <p style="font-size: 16px; line-height: 1.6;">
-                    We're thrilled to have you back! You've successfully logged into your account. If you didn't log in or noticed any unusual activity, please <a href="mailto:deepaklogo222@gmail.com" style="color: #3498db; text-decoration: none;">let us know</a> right away.
-                </p>
-                <div style="background-color: #ecf0f1; padding: 15px; border-radius: 8px; margin: 20px 0;">
-                    <h3 style="color: #e74c3c;">🎯 Next Steps for You:</h3>
-                    <ul style="list-style-type: none; padding-left: 0; font-size: 15px;">
-                        <li style="padding: 8px 0;"><strong>🔄 Update your profile:</strong> Keep your information up to date for a personalized experience.</li>
-                        <li style="padding: 8px 0;"><strong>✨ Explore new features:</strong> We've introduced some amazing updates since your last visit. Check them out!</li>
-                        <li style="padding: 8px 0;"><strong>🔒 Secure your account:</strong> Ensure your password is strong and set up two-factor authentication.</li>
-                    </ul>
-                </div>
-                <p style="font-size: 16px; line-height: 1.6;">
-                    Thanks for being a valued member of our community. We can't wait for you to explore all the great things we've been working on!
-                </p>
-                <div style="text-align: center; margin-top: 20px;">
-                    <a href="https://yourapp.com/login" style="background-color: #2ecc71; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold;">
-                        Explore Now 🚀
-                    </a>
-                </div>
-                <p style="font-size: 14px; color: #95a5a6; margin-top: 30px;">
-                    If you need any help, feel free to <a href="mailto:deepaklogo222@gmail.com" style="color: #3498db; text-decoration: none;">reach out to our support team</a>.
-                </p>
-                <p style="font-size: 14px; color: #95a5a6;">
-                    Best regards,<br>Your Company Team
-                </p>
-
-            </div>
-        `);
-        
-        
-
-        return res.status(200).json({
-            result: { user_email: user.email, token },
-            message: 'Login successful',
-            status: 'success',
-            responseCode: 200
-        });
+        const result = await loginUser(email, password);
+        return res.status(result.responseCode).json(result);
     } catch (error) {
         console.error('Login error:', error);
         return res.status(500).json({
@@ -168,3 +38,148 @@ exports.login = async (req, res) => {
     }
 };
 
+exports.updateUserProfile = async (req, res) => {
+    try {
+        const   userId  = req.user;
+        const email = req.email
+        const { firstName, lastName, community_name, zipCode, phone_No, address } = req.body;
+        const image = req.files ? req.files.image : null;
+
+        const result = await updateUserProfileService(userId, { firstName, lastName, community_name, zipCode, phone_No, address }, image,email);
+
+        return res.status(result.responseCode).json(result);
+    } catch (error) {
+        console.error('Update profile error:', error);
+        return res.status(500).json({
+            result: {},
+            message: 'An unexpected error occurred. Please try again later.',
+            status: 'error',
+            responseCode: 500,
+            reason: error.message
+        });
+    }
+};
+
+exports.deleteUser = async (req, res) => {
+    try {
+        const userId = req.user; 
+        const email = req.email;
+        console.log(userId);
+
+        const result = await deleteUser(userId, email);
+
+        if (!result.success) {
+            return res.status(result.statusCode).json({
+                result: {},
+                message: result.message,
+                status: 'error',
+                responseCode: result.statusCode,
+            });
+        }
+
+        return res.status(200).json({
+            result: {},
+            message: result.message,
+            status: 'success',
+            responseCode: 200,
+        });
+    } catch (error) {
+        return res.status(500).json({
+            result: {},
+            message: 'Error deleting user',
+            status: 'error',
+            responseCode: 500,
+            reason: error.message,
+        });
+    }
+};
+
+exports.updateUserPassword = async (req, res) => {
+    const { oldPassword, newPassword } = req.body;
+    const userId = req.user;
+    const email = req.email
+
+    try {
+    const result = await updatePassword(userId, oldPassword, newPassword, email);
+    return res.status(result.responseCode).json(result);
+    } catch (err) {
+    return res.status(500).json({
+        result: {},
+        message: 'Server error',
+        status: 'error',
+        responseCode: 500,
+        error: err.message,
+    });
+    }
+};
+
+exports.updateUserEmail = async (req, res) => {
+    const { currentEmail, newEmail } = req.body;
+    const userId = req.user;
+    const email = req.email;
+
+    try {
+        const result = await updateEmail(userId, currentEmail, newEmail, email);
+        return res.status(result.responseCode).json(result);
+    } catch (err) {
+        return res.status(500).json({
+            message: 'Server error',
+            status: 'error',
+            responseCode: 500,
+            error: err.message,
+        });
+    }
+};
+
+
+exports.getUserProfile = async (req, res) => {
+    try {
+    const userId = req.user;
+
+    const result = await getProfile(userId);
+
+    return res.status(result.responseCode).json(result);
+    } catch (err) {
+    return res.status(500).json({
+        result: {},
+        message: 'Server error',
+        status: 'error',
+        responseCode: 500,
+        error: err.message,
+    });
+    }
+};
+
+exports.forgotPassword = async (req, res) => {
+    try {
+        const { email } = req.body;
+        const result = await forgotUserPassword(email);
+        return res.status(result.responseCode).json(result);
+    } catch (error) {
+        console.error('Forgot password error:', error);
+        return res.status(500).json({
+            result: {},
+            message: 'An unexpected error occurred. Please try again later.',
+            status: 'error',
+            responseCode: 500,
+            reason: error.message,
+        });
+    }
+};
+
+exports.resetPassword = async (req, res) => {
+    try {
+        const { email, otp, newPassword } = req.body;
+        const result = await resetUserPassword(email, otp, newPassword);
+        return res.status(result.responseCode).json(result);
+    } catch (error) {
+        console.error('Reset password error:', error);
+        return res.status(500).json({
+            result: {},
+            message: 'An unexpected error occurred. Please try again later.',
+            status: 'error',
+            responseCode: 500,
+            reason: error.message,
+        });
+    }
+};
