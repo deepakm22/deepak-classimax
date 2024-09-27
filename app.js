@@ -2,6 +2,7 @@ const userSchema = require('./models/userModel');
 const express = require('express');
 const connectDB = require('./config/database'); 
 const userRoutes = require('./routes/authRoutes');
+const categoryRoutes = require('./routes/categoryRoutes')
 const file_Upload = require('express-fileupload');
 
 const app = express();
@@ -14,6 +15,7 @@ app.use(file_Upload());
 
 
 app.use('/api/user', userRoutes);
+app.use('/api/category', categoryRoutes)
 
 
 app.listen(PORT, () => {
