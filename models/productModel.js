@@ -2,16 +2,17 @@ const mongoose = require('mongoose');
 
 
 const productSchema = new mongoose.Schema({
-    title:{
+title:{
         type: String,
         required: true,
     },
-    description:{
+description:{
         type: String,
         required: true
     },
 userId: {
     type: mongoose.Types.ObjectId, 
+    ref: 'User'
 },
 categoryId: {
     type: mongoose.Types.ObjectId, 

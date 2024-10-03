@@ -6,6 +6,7 @@ const categoryRoutes = require('./routes/categoryRoutes')
 const subCategoryRoutes = require('./routes/subCategoryRoutes')
 const productRoutes = require('./routes/productRoutes')
 const reviewRoutes = require('./routes/reviewRoutes')
+const adminRoutes = require('./routes/adminRoutes')
 const file_Upload = require('express-fileupload');
 const logger = require('./services/loggerServices')
 const {loggerMiddleware, errorHandlingMiddleware} = require('./middlewares/loggerMiddleware')
@@ -26,6 +27,7 @@ app.use('/api/category', categoryRoutes)
 app.use('/api/subCategory', subCategoryRoutes)
 app.use('/api/product', productRoutes)
 app.use('/api/reviews', reviewRoutes)
+app.use('/api/admin', adminRoutes)
 
 app.listen(PORT, () => {
     console.log(`Server is running on port http://localhost:${PORT}`);

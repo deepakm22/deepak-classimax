@@ -27,8 +27,6 @@ exports.deleteProductService = async (productId) => {
     return await Product.findByIdAndDelete(productId);
 };
 
-
-
 exports.searchProductsService = async (query) => {
     if (query.title) {
     return await Product.find({ title: { $regex: query.title, $options: 'i' } });

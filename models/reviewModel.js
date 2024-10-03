@@ -38,12 +38,12 @@ const reviewSchema = new mongoose.Schema({
   },
   created_by: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'users', 
+    ref: 'User', 
     required: true,
   },
   updated_by: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'users', 
+    ref: 'User', 
     required: false,
   },
 });

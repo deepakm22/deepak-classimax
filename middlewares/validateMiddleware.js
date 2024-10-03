@@ -3,6 +3,7 @@ const { registerValidationSchema, loginValidationSchema, profileUpdateSchema, de
 const {addSubCategorySchema, updateSubCategorySchema} = require('../validation/subCategoryValidation')
 const { createProductSchema , updateProductSchema} = require('../validation/productValidation')
 const {createReviewSchema, updateReviewSchema} = require('../validation/reviewValidation')
+const {adminUpdateProductSchema} = require('../validation/adminValidation')
 
 const validationMiddleware = (req, res, next) => {
     let schema;
@@ -53,7 +54,10 @@ const validationMiddleware = (req, res, next) => {
         break;
     case '/updateProduct/:id':
         schema = updateReviewSchema;
-        break;    
+        break;   
+    case '/adminUpdateProduct/:id':
+        schema = adminUpdateProductSchema;
+        break;  
     default:
         schema = null;   
     }

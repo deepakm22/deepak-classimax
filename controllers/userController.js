@@ -40,7 +40,7 @@ exports.login = async (req, res) => {
 
 exports.updateUserProfile = async (req, res) => {
     try {
-        const   userId  = req.user;
+        const userId  = req.user;
         const email = req.email
         const { firstName, lastName, community_name, zipCode, phone_No, address } = req.body;
         const image = req.files ? req.files.image : null;
