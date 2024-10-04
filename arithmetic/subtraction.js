@@ -31,5 +31,4 @@ function Subtraction({num1, num2}) {
 }
 
 
-console.log(Subtraction({num1: 100, num2: 200}));
 

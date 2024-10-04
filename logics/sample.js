@@ -14,7 +14,6 @@
 //      input[i] = 0;
 // }  */
 
-// console.log(input);  
 
 
 
@@ -35,7 +34,6 @@
 //    input[i] = 0;
 // }  */
 
-// console.log(input);  
 
 
 
@@ -45,7 +43,6 @@
 // for (let i = 0; i < input.length; i++) {
 //     for (let j = i + 1; j < input.length; j++) {
 //         if (input[i] + input[j] == target) {
-//             console.log([i], [j]);
 //         }
 //     }
 // }
@@ -59,7 +56,6 @@ Array.prototype.printLast = function() {
     }
     return this[ this.length - 1]
 };
-console.log(fruits.printLast());
 
 
 

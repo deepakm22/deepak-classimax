@@ -32,4 +32,3 @@ function multiplication({ number1, number2 }) {
     };
 }
 
-console.log(multiplication({number1: 12, number2: 12}));

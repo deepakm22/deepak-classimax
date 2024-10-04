@@ -5,15 +5,12 @@ function add({ num1, num2 }) {
     
     const num1Str = num1.toString().split('').reverse();
     const num2Str = num2.toString().split('').reverse();
-    console.log(num1Str, num2Str);
 
     const maxLength = Math.max(num1Str.length, num2Str.length);
-    console.log(maxLength);
 
     for (let i = 0; i < maxLength; i++) {
         const digit1 = parseInt(num1Str[i] || 0, 10);
         const digit2 = parseInt(num2Str[i] || 0, 10);
-        console.log(digit1,digit2);
 
         let sum = digit1 + digit2 + carry;
         carry = Math.floor(sum / 10);
@@ -27,5 +24,4 @@ function add({ num1, num2 }) {
     return { answer, intermediateSteps };
 }
 
-console.log(add({ num1: 10, num2: 20 }));
 

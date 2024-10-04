@@ -17,8 +17,6 @@ function division(num1, num2) {
         currentRemainder = remainder; 
     }
 
-    console.log(stepString); 
-    console.log('Final Result:', result); 
 
     return stepString; 
 }
