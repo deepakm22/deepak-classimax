@@ -48,14 +48,28 @@
 // }
 
 
-const fruits = ["Banana", "Orange", "Apple", "Mango"];
+// const fruits = ["Banana", "Orange", "Apple", "Mango"];
 
-Array.prototype.printLast = function() {
-    if(this.length == 0){
-        return -1
+// Array.prototype.printLast = function() {
+//     if(this.length == 0){
+//         return -1
+//     }
+//     return this[ this.length - 1]
+// };
+
+
+let n = 5;
+for (let i = 1; i <= n; i++) {
+    let row = '';
+    for (let j = 1; j <= i; j++) {
+        row += '* ';
     }
-    return this[ this.length - 1]
-};
+    console.log(row);
+}
+
+
+
+
 
 
 
