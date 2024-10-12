@@ -16,9 +16,11 @@ try {
     
     req.user = decoded.id;
     req.email = decoded.email;
+    req.isAdmin = decoded.isAdmin
     console.log(req.user)
     next();
     } catch (error) {
+        
     return res.status(403).json({ error: 'Invalid or expired token' });
     }
 };

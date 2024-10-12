@@ -18,4 +18,6 @@ router.get('/getProfile', authenticateToken, getUserProfile)
 router.post('/forgotPass', validationMiddleware, forgotPassword)
 router.post('/reset', validationMiddleware, resetPassword)
 
+
+
 module.exports = router;

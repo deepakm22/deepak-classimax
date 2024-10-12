@@ -9,6 +9,10 @@ password: {
     type: String,
     required: true,
 },
+isAdmin: {
+    type: Boolean,
+    default: false,
+},
 firstName: {
     type: String,
     required: false,

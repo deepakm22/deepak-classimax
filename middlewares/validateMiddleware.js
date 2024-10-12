@@ -1,4 +1,9 @@
+const { addCategorySchema, updateCategorySchema} = require('../validation/categoryValidation');
 const { registerValidationSchema, loginValidationSchema, profileUpdateSchema, deleteUserSchema, updateUserPasswordSchema, updateUserEmailSchema, resetPasswordSchema} = require('../validation/loginValidation')
+const {addSubCategorySchema, updateSubCategorySchema} = require('../validation/subCategoryValidation')
+const { createProductSchema , updateProductSchema} = require('../validation/productValidation')
+const {createReviewSchema, updateReviewSchema} = require('../validation/reviewValidation')
+const {adminUpdateProductSchema} = require('../validation/adminValidation')
 
 const validationMiddleware = (req, res, next) => {
     let schema;
@@ -25,6 +30,34 @@ const validationMiddleware = (req, res, next) => {
     case '/reset':
         schema = resetPasswordSchema;
         break;
+    case '/createCategory':
+        schema = addCategorySchema;
+        break;
+    case '/updateCategory/:id':
+        schema = updateCategorySchema;
+        break;
+
+    case '/createSubCategory':
+        schema = addSubCategorySchema;
+        break;
+    case '/updateSubCategory':
+        schema = updateSubCategorySchema;
+        break;   
+    case '/addProduct':
+        schema = createProductSchema;
+        break;
+    case '/updateProduct/:id':
+        schema = updateProductSchema;
+        break;    
+    case '/addProduct':
+        schema = createReviewSchema;
+        break;
+    case '/updateProduct/:id':
+        schema = updateReviewSchema;
+        break;   
+    case '/adminUpdateProduct/:id':
+        schema = adminUpdateProductSchema;
+        break;  
     default:
         schema = null;   
     }

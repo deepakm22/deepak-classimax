@@ -1,0 +1,72 @@
+Request: POST /api/user/register
+Body: {"email":"deepaklogo@gmail.com","password":"12345678","confirmPassword":"12345678"}
+Response: 500
+Duration: 17ms
+Body: {"result":{"error":{}},"message":"An unexpected error occurred. Please try again later.","status":"error","responseCode":500,"reason":"email is not defined"}
+
+Request: POST /api/user/register
+Body: {"email":"deepaklogo@gmail.com","password":"12345678","confirmPassword":"12345678"}
+Response: 500
+Duration: 15ms
+Body: {"result":{},"message":"An unexpected error occurred. Please try again later.","status":"error","responseCode":500,"reason":"email is not defined"}
+
+Request: POST /api/user/register
+Body: {"email":"deepaklogo@gmail.com","password":"12345678","confirmPassword":"12345678"}
+Response: 500
+Duration: 18ms
+Body: {"result":{},"message":"An unexpected error occurred. Please try again later.","status":"error","responseCode":500,"reason":"email is not defined"}
+
+Request: POST /api/user/register
+Body: {"email":"deepaklogo@gmail.com","password":"12345678","confirmPassword":"12345678"}
+Response: 500
+Duration: 27ms
+Body: {"result":{"error":{}},"message":"An unexpected error occurred. Please try again later.","status":"error","responseCode":500,"reason":"email is not defined"}
+
+Request: POST /api/user/register
+Body: {"email":"deepaklogo@gmail.com","password":"12345678","confirmPassword":"12345678"}
+Response: 500
+Duration: 14ms
+Body: {"result":{"error":{}},"message":"An unexpected error occurred. Please try again later.","status":"error","responseCode":500,"reason":"email is not defined"}
+
+Request: POST /api/user/register
+Body: {"email":"deepaklogo@gmail.com","password":"12345678","confirmPassword":"12345678"}
+Response: 500
+Duration: 32ms
+Body: {"result":{"error":{}},"message":"An unexpected error occurred. Please try again later.","status":"error","responseCode":500,"reason":"email is not defined"}
+
+Request: POST /api/user/register
+Body: {"email":"deepaklogo@gmail.com","password":"12345678","confirmPassword":"12345678"}
+Response: 500
+Duration: 15ms
+Body: {"result":"email is not defined","message":"An unexpected error occurred. Please try again later.","status":"error","responseCode":500,"reason":"email is not defined"}
+
+Request: POST /api/user/register
+Body: {"email":"deepaklogo@gmail.com","password":"12345678","confirmPassword":"12345678"}
+Response: 400
+Duration: 45ms
+Body: {"result":{},"message":"Passwords do not match","status":"error","responseCode":400}
+
+Request: POST /api/user/register
+Body: {"email":"deepaklogo@gmail.com","password":"12345678","confirmPassword":"12345678"}
+Response: 500
+Duration: 62ms
+Body: {"result":{},"message":"An unexpected error occurred. Please try again later.","status":"error","responseCode":500,"reason":"password is not defined"}
+
+Request: POST /api/user/register
+Body: {"email":"deepaklogo@gmail.com","password":"12345678","confirmPassword":"12345678"}
+Response: 500
+Duration: 190ms
+Body: {"result":{"error":{}},"message":"internal server error","status":"error","responseCode":500}
+
+Request: POST /api/user/register
+Body: {"email":"deepaklogo@gmail.com","password":"12345678","confirmPassword":"12345678"}
+Response: 500
+Duration: 15ms
+Body: {"result":"password is not defined","message":"internal server error","status":"error","responseCode":500}
+
+Request: POST /api/user/register
+Body: {"email":"deepaklogo@gmail.com","password":"12345678","confirmPassword":"12345678"}
+Response: 201
+Duration: 1255ms
+Body: {"result":{"email":"deepaklogo@gmail.com"},"message":"User created successfully","status":"success","responseCode":201}
+

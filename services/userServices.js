@@ -11,7 +11,7 @@ exports.registerUser = async (email, password, confirmPassword) => {
         if (password !== confirmPassword) {
             return {
                 result: {},
-                message: 'Passwords do not match',
+                message: 'Passwords does not match',
                 status: 'error',
                 responseCode: 400
             };
@@ -40,8 +40,12 @@ exports.registerUser = async (email, password, confirmPassword) => {
         };
     } catch (error) {
         console.error('Registration error:', error);
-        throw error;
-    }
+        return {
+            result:  error.message ,
+            message: 'internal server error',
+            status: 'error',
+            responseCode: 500
+        };    }
 };
 
 exports.loginUser = async (email, password) => {
@@ -66,12 +70,13 @@ exports.loginUser = async (email, password) => {
             };
         }
 
-        const token = jwt.sign({ id: user.id, email: user.email }, process.env.SECRET_KEY);
+        const token = jwt.sign({ id: user.id, email: user.email, isAdmin: user.isAdmin }, process.env.SECRET_KEY);
 
         sendMail(email, 'Login Successful', `Welcome back, ${user.email}!`);
 
+        const admin = user.isAdmin
         return {
-            result: { user_email: user.email, token },
+            result: { user_email: user.email, token, admin },
             message: 'Login successful',
             status: 'success',
             responseCode: 200
